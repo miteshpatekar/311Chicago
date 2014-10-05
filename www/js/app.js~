@@ -1,0 +1,162 @@
+
+
+$(document).on('pagebeforeshow', "#foo", function (event, data) {
+    var $j = jQuery.noConflict();
+    $j("#createNewTaskForm").validate({
+        rules: {
+            TaskVis: "required",
+            StatusVis: "required",
+            // DueDateVis:"required",
+            PriorityVis: "required",
+            SourceVis: "required",
+            AssignToText: "required"
+        },
+        messages: {
+            TaskVis: "Please enter subject",
+            StatusVis: "Please select status",
+            //  DueDateVis: "Please select Due Date",
+            PriorityVis: "Please select priority",
+            SourceVis: "Please select source",
+            AssignToText: "Please select user"
+        }
+    });
+    $j.validator.setDefaults({
+        debug: true,
+        success: "valid"
+    });
+
+    $j("#TaskPagehead").html("Tasks for Store " + store.Name + "");
+    var contype = checkInternetConnectivity();
+    if (contype == 'No network connection') { }
+    else
+    {
+        loadUsers();
+    }
+    function loadUsers() {
+        $j.mobile.loading('show', {
+            text: 'Loading ',
+            textVisible: true,
+            //theme:theme,
+            html: ""
+        });
+        forcetkClient.query("SELECT Id,Alias,City,CommunityNickname,CompanyName,Country,Email,\
+                FirstName,Name,Username,IsActive FROM User where IsActive=true", onsuccessListUsers, onError);
+
+        function onsuccessListUsers(response) {
+            var list = '';
+            $j.each(response.records, function (i, item) {
+                list += '<tr id="' + item.Id + '"class="AssigntToUserRow">\
+                            <td>' + item.FirstName + '</td>\
+                        <td>' + item.Email + '</td>\
+                     </tr>';
+            });
+            $j("#tbodyforAssignToUsers").append(list);
+            $j.mobile.loading('hide');
+            //$j("#tableForAssignToUsers").table("refresh");
+            //$j("#tableForAssignToUsers").attr("data-filter", "true");
+            $j('table').filterTable();
+            //$j("#susers").css("border-radius","3px");
+            //$j("#susers").css("border-color","grey");
+            //$j("#susers").css("border-width", ".5px");
+            //$j(input[type="search"]).css("border-radius", "3px");
+            //$j(input[type = "search"]).css("border-color", "grey");
+            //$j(input[type = "search"]).css("border-width", ".5px");
+        }
+        function onError(r) {
+            console.log(JSON.stringify(r));
+            alert("Error" + JSON.stringify(r));
+        }
+    }
+    $j(document).off('click', '#submitTask').on('click', '#submitTask', function () {
+        if ($j("#createNewTaskForm").valid()) {
+            $j.mobile.loading('show', {
+                text: 'Adding New Task',
+                textVisible: true,
+                //theme:theme,
+                html: ""
+            });
+
+            var task = $j("#TaskVis").val();
+            var DueDate = $j("#DueDateVis").val();
+            var Description = $j("#DescriptionVis").val();
+            var Priority = $j("#PriorityVis").val();
+            var Status = $j("#StatusVis").val();
+            var Source = $j("#SourceVis").val();
+
+            forcetkClient.query("SELECT Id FROM Survey_Response__c s, s.Store__r a where s.Survey__r.Survey_Type__c='" + Source + "'\
+                            and s.Survey__r.Status__c='Active' and a.Name='" + store.Name + "' and s.Survey_Status__c='In Draft'",
+                                onsuccessResponseIdInDraft, onError);
+
+            function onsuccessResponseIdInDraft(response) {
+                console.log("Response:" + JSON.stringify(response));
+                if (response.totalSize != 0) {
+                    var fields = {};
+                    //fields.AccountId = store.Id;
+
+                    fields.Subject = task;
+                    fields.OwnerId = AssignToUserId;  // Assigned to
+                    //  fields.WhoId = userId;  // Who created
+
+                    fields.WhatId = response.records[0].Id;  //Related to what kind of task
+
+                    fields.Description = Description;
+                    if (DueDate != "") {
+                        fields.ActivityDate = new Date(DueDate);
+                    }
+                    fields.Priority = Priority;
+                    fields.Status = Status;
+
+                    console.log("******Fields:  " + JSON.stringify(fields));
+                    forcetkClient.create("Task", fields, callbackGetResponseTaskId, onError);
+
+                    function callbackGetResponseTaskId(response) {
+                        $j.mobile.loading('hide'); // hide loading add new task
+                        alert("A task has been assigned to " + AssignToUserName + " successfully");
+                        $j.mobile.changePage('StoreDetails.html', { transition: "slideup" });
+                    }
+                }
+                else {
+                    $j.mobile.loading('hide'); // hide loading add new task
+                    alert("Please start a survey to assign tasks");
+                    $j.mobile.changePage('StoreDetails.html', { transition: "slideup" });
+                }
+            }
+            function onError(response) {
+                alert("Error: "+ JSON.stringify(response));
+            }
+        }
+    });
+
+    $j("#DueDateVis").datepicker({
+        minDate: new Date(),
+        onClose: function (dateText, inst) {
+
+            //  $j(this).attr('type', "text");
+        },
+        beforeShow: function (input, inst) {
+            $j.datepicker._pos = $j.datepicker._findPos(input); //this is the default position
+            $j.datepicker._pos[0] = 0;
+            $j.datepicker._pos[1] = 150; //top
+        }
+    });
+
+    var AssignToUserId;
+    var AssignToUserName;
+
+    $j(document).off('click', '.AssigntToUserRow').on('click', '.AssigntToUserRow', function () {
+        AssignToUserId = $j(this).attr("id");
+        $j(this).parent().parent().css("background-color", "#E0EEE0");
+        AssignToUserName = $j(this).children()[0].innerText;
+        $j(this).parent().parent().css("background-color", "#E0EEE0");
+        $j(this).siblings().css("background-color", "#FFFFFF");
+        $j(this).css("background-color", "#E0EEE0");
+    });
+    $j(document).off('click', '#btnAssignToAddUser').on('click', '#btnAssignToAddUser', function () {
+        $j("#AssignToText").val(AssignToUserName);
+        $j("#AssignUserPopup1").popup("close");
+    });
+    $j(document).off('click', '#btnAssignToCancel').on('click', '#btnAssignToCancel', function () {
+        $j("#AssignUserPopup1").popup("close");
+    });
+});
+('pagebeforeshow', "#alltasks", function (event, data) {
