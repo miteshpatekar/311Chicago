@@ -22,7 +22,7 @@
 
 	<div role="main" class="ui-content">
 		<ul data-role="listview" id="menu">
-			<li><a href="#complaints">
+			<li><a href="#complaintsList">
 				<img src="img/plus.png">
 				<h2>Post a complaint</h2>
 				</a>
@@ -41,24 +41,48 @@
 </div><!-- /page -->
 
 <!-- Start of second page -->
-<div data-role="page" id="complaints">
+<div data-role="page" id="complaintsList">
 
 	<div data-role="header">
 		<h1>Choose a complaint</h1>
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<ul data-role="listview" id="menu1">
-			<li><a href="#">Potholes</li>
-			<li><a href="#">Potholes</li>
-		</ul>
-		<p><a href="#home">Back to list</a></p>
+		<ul data-role="listview">
+    <li><a href="#potholesComplaint">Potholes</a></li>
+    <li><a href="#">Abandoned Car</a></li>
+    <li><a href="#">Garbage</a></li>
+</ul>
 	</div><!-- /content -->
 
 	<div data-role="footer">
 		<h4></h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
+
+
+<!-- Start of potholes form page -->
+<div data-role="page" id="potholesComplaint">
+
+	<div data-role="header">
+		<h1>Potholes complaint</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		<div class="ui-grid-solo">
+    <div class="ui-block-a" style="height:150px;text-align:center">
+		<img src="img/uploadImage.png">
+    </div>
+</div>
+			<label for="text-basic">Location</label>
+		<input type="text" name="text-basic" id="text-basic" value="">
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+		<h4></h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
 </body>
 </html>
 
