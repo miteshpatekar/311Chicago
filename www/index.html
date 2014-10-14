@@ -4,53 +4,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>listview demo</title>
   <link rel="stylesheet" href="css/jquery.mobile-1.4.4.css">
+  <link rel="stylesheet" href="css/index.css">
   <script src="js/jquery1.11.1.min.js"></script>
   <script src="js/jquery.mobile-1.4.4.min.js"></script>
   <script type="text/javascript" src="cordova.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
   <script type="text/javascript" src="js/jsondata.js"></script>
   <script type="text/javascript" src="js/index.js"></script>
+  <script>
+  $(function() {
+  setTimeout(hideSplash, 2000);
+});
+
+function hideSplash() {
+  $.mobile.changePage("#home", "fade");
+}
+
+  </script>
+  <style>
+  .imgSplash{
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:20%;
+	  }
+	  
+	  .pagebackground{
+		  background: -moz-linear-gradient(top, #1e5799 0%, #2989d8 50%, #7db9e8 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1e5799), color-stop(50%,#2989d8), color-stop(100%,#7db9e8)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #1e5799 0%,#2989d8 50%,#7db9e8 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #1e5799 0%,#2989d8 50%,#7db9e8 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #1e5799 0%,#2989d8 50%,#7db9e8 100%); /* IE10+ */
+background: linear-gradient(to bottom, #1e5799 0%,#2989d8 50%,#7db9e8 100%); /* W3C */
+		  }
+		  
+		 
+.status-open{
+	color:red;
+	}
+	
+	.status-complete{
+	color:green;
+}
+  </style>
 </head>
 <body>
+
+<!--Splash screen page-->
+<div class="pagebackground" data-role="page" data-theme="b" id="splash"> 
+    <div class="splash" style="align: center;">
+        <img class="imgSplash" src="img/311Chicago.png" alt="splash" />
+    </div>
+</div>
+
 
 <!-- Start of first page -->
 <div data-role="page" id="home">
 
-	<div data-role="header" class="pagehead" style="background-color:#2A6D82">
+	<div data-role="header" class="pagehead" style="background-color:#006B8F;color:#FFFFFF">
 		<h1>311 Chicago</h1>
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
 		<ul data-role="listview" id="menu">
-			<li><a href="#complaintsList">
+			<li><a href="#chooseComplaintsList" data-transition="slide">
 				<img src="img/plus.png">
 				<h2>Post a complaint</h2>
 				</a>
 			</li>
-			<li><a href="#">
+			<li><a href="#viewComplaintsList" data-transition="slide">
 				<img src="img/View.png">
 				<h2>View Complaints</h2>
 				</a>
 			</li>
 	</ul>
 	</div><!-- /content -->
-
 	<div data-role="footer">
 		<h4></h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
 
-<!-- Start of second page -->
-<div data-role="page" id="complaintsList">
+<!-- Start of Choose Complaints list page -->
+<div data-role="page" id="chooseComplaintsList">
 
-	<div data-role="header">
+	<div data-role="header" class="pagehead">
 		<h1>Choose a complaint</h1>
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
 		<ul data-role="listview">
-    <li><a href="#potholesComplaint">Potholes</a></li>
-    <li><a href="#">Abandoned Car</a></li>
+    <li><a href="#potholesComplaint" data-transition="slide">Potholes</a></li>
+    <li><a href="#carAbandonedComplaint" data-transition="slide">Abandoned Cars</a></li>
     <li><a href="#">Garbage</a></li>
 </ul>
 	</div><!-- /content -->
@@ -70,18 +114,146 @@
 
 	<div role="main" class="ui-content">
 		<div class="ui-grid-solo">
-    <div class="ui-block-a" style="height:150px;text-align:center">
-		<img src="img/uploadImage.png">
+			<label for="text-basic">Take Photo</label>
+    <div class="ui-block-a" style="height:200px;text-align:center">
+		
+		<div id="imageClick">
+		 <canvas id="camImageVisCanvas" width="250" height="200">
+		 </canvas>
+		</div>
     </div>
 </div>
 			<label for="text-basic">Location</label>
 		<input type="text" name="text-basic" id="text-basic" value="">
+		<button id="btnSubmit" class="ui-btn ui-corner-all">Submit</button>
 	</div><!-- /content -->
 	
 	<div data-role="footer">
 		<h4></h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
+
+
+<!-- Start of abandoned car form page -->
+<div data-role="page" id="carAbandonedComplaint">
+
+	<div data-role="header">
+		<h1>Abandoned Car complaint</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		<div class="ui-grid-solo">
+			<label for="text-basic">Take Photo</label>
+    <div class="ui-block-a" style="height:200px;text-align:center">
+		
+		<div id="imageClick">
+		 <canvas id="camImageVisCanvas" width="250" height="200">
+		 </canvas>
+		</div>
+    </div>
+</div>
+			<label for="text-basic">Location</label>
+		<input type="text" name="text-basic" id="text-basic" value="">
+		<button id="btnSubmit" class="ui-btn ui-corner-all">Submit</button>
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+		<h4></h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+
+<!-- Start of View Complaints list page -->
+<div data-role="page" id="viewComplaintsList">
+
+	<div data-role="header" class="pagehead">
+		<h1>View a complaint</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		<ul data-role="listview">
+    <li><a href="#potholesComplaintList" data-transition="slide">Potholes</a></li>
+    <li><a href="#abandonedCarComplaintList" data-transition="slide">Abandoned Cars</a></li>
+    <li><a href="#">Garbage</a></li>
+</ul>
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<h4></h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+
+<!-- Start of View Potholes Complaint list page -->
+<div data-role="page" id="potholesComplaintList">
+
+	<div data-role="header" class="pagehead">
+		<h1>Potholes Complaints List</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		
+		<div data-role="tabs" id="tabs">
+  <div data-role="navbar">
+    <ul>
+      <li class="ui-state-focus ui-tabs-active ui-state-active"><a href="#one" class="ui-btn-active" data-ajax="false">All List</a></li>
+      <li class=""><a href="#two" data-ajax="false">My List</a></li>
+    </ul>
+  </div>
+  <div id="one" class="ui-body-d ui-content">
+    <ul data-role="listview" id="listPotholes" data-filter="true" data-filter-placeholder="Search address..." data-inset="true">			
+</ul>
+  </div>
+  <div id="two">
+    <ul data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Search address...">
+        <li>1200 street jackson<h6><span class="status-open">Open</span></h6></li>
+        <li>1200 street Wabash<h6><span class="status-complete">Complete</span></h6></li>
+    </ul>
+  </div>
+</div>
+	</div><!-- /content -->
+	<div data-role="footer">
+		<h4></h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+<!-- Start of Abandoned Car Complaint list page -->
+<div data-role="page" id="abandonedCarComplaintList">
+
+	<div data-role="header" class="pagehead">
+		<h1>Abandoned Cars List</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		
+		<div data-role="tabs" id="tabs">
+		<div data-role="navbar">
+		<ul>
+			<li class="ui-state-focus ui-tabs-active ui-state-active"><a href="#one" class="ui-btn-active" data-ajax="false">All List</a></li>
+			<li class=""><a href="#two" data-ajax="false">My List</a></li>
+		</ul>
+	</div>
+	<div id="one" class="ui-body-d ui-content">
+		<ul data-role="listview" id="listPotholes" data-filter="true" data-filter-placeholder="Search address..." data-inset="true">
+			1st page			
+		</ul>
+  </div>
+  <div id="two">
+    <ul data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Search address...">
+        <li>1200 street jackson<h6><span class="status-open">Open</span></h6></li>
+        <li>1200 street Wabash<h6><span class="status-complete">Complete</span></h6></li>
+    </ul>
+  </div>
+</div>
+		
+		
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<h4></h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
 
 </body>
 </html>
